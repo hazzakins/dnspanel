@@ -24,6 +24,7 @@ RUN chmod +x /entrypoint.sh
 COPY . /var/www/dns
 
 RUN mkdir -p /var/log/dns
+RUN mkdir -p /var/log/namingo
 RUN chown -R www-data:www-data /var/log/dns
 RUN chown -R www-data:www-data /var/log/namingo
 RUN chown -R www-data:www-data /var/www/dns/cache/
