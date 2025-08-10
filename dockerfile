@@ -25,6 +25,7 @@ COPY . /var/www/dns
 
 RUN mkdir -p /var/log/dns
 RUN chown -R www-data:www-data /var/log/dns
+RUN chown -R www-data:www-data /var/log/namingo
 RUN chown -R www-data:www-data /var/www/dns/cache/
 
 WORKDIR /var/www/dns
