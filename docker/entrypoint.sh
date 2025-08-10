@@ -2,7 +2,19 @@
 set -e
 
 APP_DIR="/var/www/dns"
+if [ -z "${APP_DOMAIN}" ]; then
+    APP_DOMAIN="example.com"
+fi
 
+if [ -n "${APP_URL}" ]; then
+    CADDY_URL="${APP_URL#http://}"
+    CADDY_URL="${CADDY_URL#https://}"
+else
+    APP_URL="https://dns.example.com"
+
+    CADDY_URL="${APP_URL#http://}"
+    CADDY_URL="${CADDY_URL#https://}"
+fi
 # Generate .env from env-sample using current environment variables
 if [ -f "$APP_DIR/env-sample" ]; then
     while IFS= read -r line; do
