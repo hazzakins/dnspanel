@@ -1,26 +1,18 @@
 FROM ubuntu:24.04
 
-RUN apt update
-RUN apt install -y curl software-properties-common
-RUN add-apt-repository ppa:ondrej/php
-RUN apt update
-RUN apt install -y --no-install-recommends \
-    bzip2 composer git net-tools php8.3 php8.3-bcmath php8.3-bz2 php8.3-cli \
-    php8.3-common php8.3-curl php8.3-ds php8.3-fpm php8.3-gd php8.3-gmp php8.3-igbinary \
-    php8.3-imap php8.3-intl php8.3-mbstring php8.3-opcache php8.3-readline php8.3-redis \
-    php8.3-soap php8.3-swoole php8.3-uuid php8.3-xml php8.3-zip \
-    unzip wget whois 
-
-RUN apt-get update && apt-get install -y --no-install-recommends gettext-base
-
-RUN rm -rf /var/lib/apt/lists/*
-
-RUN curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' -o caddy-stable.gpg.key \
-    gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg caddy-stable.gpg.key \
-    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list
-
-RUN apt update 
-RUN apt install -y --no-install-recommends caddy
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl gpg software-properties-common && \
+    add-apt-repository ppa:ondrej/php && \
+    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \
+    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        bzip2 composer git net-tools php8.3 php8.3-bcmath php8.3-bz2 php8.3-cli \
+        php8.3-common php8.3-curl php8.3-ds php8.3-fpm php8.3-gd php8.3-gmp php8.3-igbinary \
+        php8.3-imap php8.3-intl php8.3-mbstring php8.3-opcache php8.3-readline php8.3-redis \
+        php8.3-soap php8.3-swoole php8.3-uuid php8.3-xml php8.3-zip \
+        unzip wget whois gettext-base caddy && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /usr/share/adminer
 RUN wget "http://www.adminer.org/latest.php" -O /usr/share/adminer/latest.php
