@@ -32,4 +32,5 @@ WORKDIR /var/www/dns
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["php-fpm8.3", "-F"]   # or your preferred command (apache2-foreground, etc.)
+
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
