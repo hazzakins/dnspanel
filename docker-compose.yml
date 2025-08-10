@@ -1,0 +1,33 @@
+services:
+  app:
+    image: dnspanel:latest
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      TEST: TRUE #INDICATE THIS IS A TEST ENVIRONMENT, DISABLES CADDY TLS
+      APP_NAME: Test
+      APP_DOMAIN: localhost
+      APP_URL: https://localhost
+      DB_DATABASE: dns
+      DB_HOST: db
+      DB_USERNAME: dns_user
+      DB_PASSWORD: dns_password
+      ADMIN_USER: admin
+      ADMIN_EMAIL: test@example.com
+      ADMIN_PASSWORD: TESTPASSWORD
+    depends_on:
+      - db
+    links:
+      - "db:database"
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: yes
+      MARIADB_DATABASE: dns
+      MARIADB_USER: dns_user
+      MARIADB_PASSWORD: dns_password
