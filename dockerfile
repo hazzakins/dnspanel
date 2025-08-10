@@ -18,7 +18,10 @@ RUN mkdir /usr/share/adminer
 RUN wget "http://www.adminer.org/latest.php" -O /usr/share/adminer/latest.php
 RUN ln -s /usr/share/adminer/latest.php /usr/share/adminer/adminer.php
 
-COPY --chown=www-data:www-data . /var/www/dns
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+COPY . /var/www/dns
 
 RUN mkdir -p /var/log/dns
 RUN chown -R www-data:www-data /var/log/dns
@@ -27,9 +30,6 @@ RUN chown -R www-data:www-data /var/www/dns/cache/
 WORKDIR /var/www/dns
 
 COPY docker/Caddyfile /etc/caddy/Caddyfile
-
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["php-fpm8.3", "-F"]   # or your preferred command (apache2-foreground, etc.)
