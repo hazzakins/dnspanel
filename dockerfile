@@ -26,7 +26,6 @@ RUN chown -R www-data:www-data /var/www/dns/cache/
 
 WORKDIR /var/www/dns
 RUN composer install
-RUN mv env-sample .env
 
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 
