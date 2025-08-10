@@ -3,7 +3,7 @@ require __DIR__ . '/../vendor/autoload.php'; // Path to the Composer autoload fi
 
 // Load environment variables from .env file
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
+$dotenv->safeLoad();
 
 // Retrieve database connection details from environment variables
 $dbDriver = $_ENV['DB_DRIVER'];
