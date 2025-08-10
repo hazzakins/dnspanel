@@ -25,7 +25,6 @@ RUN chown -R www-data:www-data /var/log/dns
 RUN chown -R www-data:www-data /var/www/dns/cache/
 
 WORKDIR /var/www/dns
-RUN composer install
 
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 
