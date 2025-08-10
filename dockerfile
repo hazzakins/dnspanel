@@ -30,8 +30,6 @@ RUN mv env-sample .env
 
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 
-RUN systemctl enable caddy
-
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

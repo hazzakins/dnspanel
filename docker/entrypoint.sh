@@ -8,4 +8,7 @@ if [ -f "$APP_DIR/env-sample" ]; then
     envsubst < "$APP_DIR/env-sample" > "$APP_DIR/.env"
 fi
 
+# Start Caddy in the background
+caddy run --config /etc/caddy/Caddyfile --adapter caddyfile &
+
 exec "$@"
