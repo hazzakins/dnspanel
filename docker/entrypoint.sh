@@ -68,12 +68,53 @@ if [ -n "${APP_DOMAIN}" ]; then
             fi
         fi
     done
-    OPCACHE_INI="/etc/php/8.3/mods-available/opcache.ini"
-    sed -i -E "s/;opcache\.jit_buffer_size\s*=.*/opcache.jit_buffer_size=100M/" "$OPCACHE_INI"
-    sed -i -E "s/;opcache\.jit\s*=.*/opcache.jit=1255/" "$OPCACHE_INI"
 fi
 
-# Start Caddy in the background
-caddy run --config /etc/caddy/Caddyfile --adapter caddyfile &
+service php8.3-fpm restart
+
+
+if [ -n "${ADMIN_USER}" ]; then
+    sed -i "s/admin/${ADMIN_USER}/" /var/www/dns/bin/create_admin_user.php
+fi
+
+if [ -n "${ADMIN_EMAIL}" ]; then
+    sed -i "s/admin@example.com/${ADMIN_EMAIL}/" /var/www/dns/bin/create_admin_user.php
+fi
+
+if [ -n "${ADMIN_PASSWORD}" ]; then
+    sed -i "s/TestPassword/${ADMIN_PASSWORD}/" /var/www/dns/bin/create_admin_user.php
+else
+    ADMIN_PASSWORD=$(tr -cd '[:graph:]' < /dev/urandom | head -c 12)
+    sed -i "s/TestPassword/${ADMIN_PASSWORD}/" /var/www/dns/bin/create_admin_user.php
+fi
+
+
+sed -i "s/your-email@example.com/${ADMIN_EMAIL}/" /etc/caddy/Caddyfile
+sed -i "s/dns.example.com/${CADDY_URL}/" /etc/caddy/Caddyfile
+
+if [ "${TEST}" ]; then
+    sed -i "s/tls/# tls/" /etc/caddy/Caddyfile
+fi
+. .env
+
+until mysql -u ${DB_USERNAME} -h ${DB_HOST} -p${DB_PASSWORD} -P ${DB_PORT}  -e ";" ; do
+       echo "Waiting for MySQL to be ready..."
+       sleep 10
+done
+echo "MySQL is ready, running migrations..."
+
+mysql -u ${DB_USERNAME} -h ${DB_HOST} -p${DB_PASSWORD} -P ${DB_PORT} < /var/www/dns/db.sql
+
+composer install
+
+echo "############################################"
+cd /var/www/dns/bin
+php create_admin_user.php
+cd ..
+
+echo "Admin user: ${ADMIN_USER}"
+echo "Admin email: ${ADMIN_EMAIL}"
+echo "Admin password: ${ADMIN_PASSWORD}"
+echo "############################################"
 
 exec "$@"
