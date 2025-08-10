@@ -6,11 +6,11 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->safeLoad();
 
 // Retrieve database connection details from environment variables
-$dbDriver = $_ENV['DB_DRIVER'];
-$dbHost = $_ENV['DB_HOST'];
-$dbName = $_ENV['DB_DATABASE'];
-$dbUser = $_ENV['DB_USERNAME'];
-$dbPass = $_ENV['DB_PASSWORD'];
+$dbDriver = $_SERVER['DB_DRIVER'];
+$dbHost = $_SERVER['DB_HOST'];
+$dbName = $_SERVER['DB_DATABASE'];
+$dbUser = $_SERVER['DB_USERNAME'];
+$dbPass = $_SERVER['DB_PASSWORD'];
 
 // User details (replace these with actual user data)
 $email = 'bazlyankov@gmail.com'; // Replace with admin email
