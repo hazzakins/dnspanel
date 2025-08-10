@@ -34,6 +34,29 @@ if [ -f "$APP_DIR/env-sample" ]; then
     done < "$APP_DIR/env-sample" > "$APP_DIR/.env"
 fi
 
+for INI in /etc/php/8.3/cli/conf.d/99-dnspanel /etc/php/8.3/fpm/conf.d/99-dnspanel; do
+cat << 'EOF' > $INI
+[opcache]
+opcache.enable=1
+opcache.enable_cli=1
+opcache.jit_buffer_size=100M
+opcache.jit=1255
+
+[Session]
+session.cookie_secure = 1
+session.cookie_httponly = 1
+session.cookie_samesite = "Strict"
+session.cookie_domain = ${APP_DOMAIN}
+EOF
+done
+
+OPCACHE_INI="/etc/php/8.3/mods-available/opcache.ini"
+cat << 'EOF' > $OPCACHE_INI
+[opcache]
+opcache.jit_buffer_size=100M
+opcache.jit=1255
+EOF
+
 # Configure PHP session cookie domain if APP_DOMAIN is set
 if [ -n "${APP_DOMAIN}" ]; then
     for INI in /etc/php/8.3/cli/php.ini /etc/php/8.3/fpm/php.ini; do
