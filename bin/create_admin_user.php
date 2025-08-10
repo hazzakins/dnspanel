@@ -13,8 +13,8 @@ $dbUser = $_SERVER['DB_USERNAME'];
 $dbPass = $_SERVER['DB_PASSWORD'];
 
 // User details (replace these with actual user data)
-$email = 'bazlyankov@gmail.com'; // Replace with admin email
-$newPW = 'Alkesh99!!!#';    // Replace with admin password
+$email = 'admin@example.com'; // Replace with admin email
+$newPW = 'TestPassword';    // Replace with admin password
 $username = 'admin';          // Replace with admin username
 
 // Hash the password
