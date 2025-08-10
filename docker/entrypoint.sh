@@ -25,6 +25,15 @@ fi
 # Configure PHP session cookie domain if APP_DOMAIN is set
 if [ -n "${APP_DOMAIN}" ]; then
     for INI in /etc/php/8.3/cli/php.ini /etc/php/8.3/fpm/php.ini; do
+        sed -i -E "s/;opcache\.enable\s*=.*/opcache.enable=1/" "$INI"
+        sed -i -E "s/;opcache\.enable_cli\s*=.*/opcache.enable_cli=1/" "$INI"
+        sed -i -E "s/;opcache\.jit_buffer_size\s*=.*/opcache.jit_buffer_size=100M/" "$INI"
+        sed -i -E "s/;opcache\.jit\s*=.*/opcache.jit=1255/" "$INI"
+
+        sed -i -E "s/;session\.cookie_secure\s*=.*/session.cookie_secure = 1/" "$INI"
+        sed -i -E "s/;session\.cookie_httponly\s*=.*/session.cookie_httponly = 1/" "$INI"
+        sed -i -E "s/;session\.cookie_samesite\s*=.*/session.cookie_samesite = \"Strict\"/" "$INI"
+
         if [ -f "$INI" ]; then
             if grep -q '^\s*;\?\s*session\.cookie_domain' "$INI"; then
                 sed -i -E "s/^\s*;?\s*session\.cookie_domain\s*=.*/session.cookie_domain = ${APP_DOMAIN}/" "$INI"
@@ -33,6 +42,9 @@ if [ -n "${APP_DOMAIN}" ]; then
             fi
         fi
     done
+    OPCACHE_INI="/etc/php/8.3/mods-available/opcache.ini"
+    sed -i -E "s/;opcache\.jit_buffer_size\s*=.*/opcache.jit_buffer_size=100M/" "$OPCACHE_INI"
+    sed -i -E "s/;opcache\.jit\s*=.*/opcache.jit=1255/" "$OPCACHE_INI"
 fi
 
 # Start Caddy in the background
