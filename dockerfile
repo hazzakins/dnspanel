@@ -26,7 +26,7 @@ RUN mkdir /usr/share/adminer
 RUN wget "http://www.adminer.org/latest.php" -O /usr/share/adminer/latest.php
 RUN ln -s /usr/share/adminer/latest.php /usr/share/adminer/adminer.php
 
-COPY . /var/www/dns
+COPY --chown=www-data:www-data . /var/www/dns
 
 RUN mkdir -p /var/log/dns
 RUN chown -R www-data:www-data /var/log/dns
@@ -39,15 +39,6 @@ RUN mv env-sample .env
 COPY docker/Caddyfile /etc/caddy/Caddyfile
 
 RUN systemctl enable caddy
-
-ENV PHP_INI_opcache__enable=1 \
-    PHP_INI_opcache__enable_cli=1 \
-    PHP_INI_opcache__jit=1255 \
-    PHP_INI_opcache__jit_buffer_size=100M \
-    PHP_INI_session__cookie_secure=1 \
-    PHP_INI_session__cookie_httponly=1 \
-    PHP_INI_session__cookie_samesite=Strict \
-    PHP_INI_session__cookie_domain=example.com
 
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
